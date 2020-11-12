@@ -16,11 +16,26 @@
 
   <body>
 
+<% if notice.present?%>
+<div>
+  <%= notice %>
+<div>
+<% end %>
+
+<% if alert.present?%>
+<div>
+  <%= alert %>
+<div>
+<% end %>
     <ul>
       <li><a href="/user_sign_up">Sign up</a></li>
+      <li><a href="/user_sign_in">Sign in</a></li>
+      <li><a href="/user_sign_out">Sign out</a></li>
       <li><a href="/">Users</a></li>
       <li><a href="/photos">Photos</a></li>
       <li><a href="/">Users</a></li>
+
+      <li><%= session.fetch(:user_id) %>
     </ul>
     <%= yield %>
   </body>

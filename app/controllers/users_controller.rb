@@ -1,8 +1,40 @@
 class UsersController < ApplicationController
   
+  def authenticate
+    
+    un = params.fetch("input_username")
+    pw = params.fetch("input_password")
+
+    user = User.where(username: un).at(0)
+
+    if user == nil
+      redirect_to("/user_sign_in", alert: "User not found")
+    else
+      if user.authenticate(pw)
+        session.store(:user_id, user.id)
+
+        redirect_to("/", notice: "Welcome back, "+user.username)
+      else
+        redirect_to("/user_sign_in", alert: "Password doesn't match")
+      end
+    end
+
+    
+  end
+  
+  def toast_cookies
+    reset_session
+    redirect_to("/", {notice: "See you later!"})
+  end
+
   def new_registration_form
 
     render({:template => "users/sign_up_form.html.erb"})
+  end
+  
+  def new_session_form
+
+    render({:template => "users/sign_in_form.html.erb"})
   end
   
   def index
@@ -29,6 +61,9 @@ class UsersController < ApplicationController
 
 
     if saveStatus == true
+      session.store(:user_id, user.id)
+
+
       redirect_to("/users/#{user.username}", {:notice => "Welcome, " + user.username})
     else
       redirect_to("/user_sign_up", {alert: user.errors.to_sentence})
